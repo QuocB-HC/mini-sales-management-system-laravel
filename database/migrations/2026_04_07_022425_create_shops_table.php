@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('shops', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('name');
+            $table->string('name')->unique();
             $table->string('logo_url')->nullable();
             $table->string('address');
             $table->string('phone');

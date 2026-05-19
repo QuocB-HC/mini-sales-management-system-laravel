@@ -11,6 +11,13 @@
         <main class="main-content">
             <header>
                 <h1>Users Management</h1>
+
+                <div class="search-container">
+                    <form action="{{ route('admin.users.search') }}" method="GET" class="search-form">
+                        <input type="text" name="search" placeholder="Enter user email" value="{{ request('search') }}">
+                        <button type="submit" class="search-btn">Search</button>
+                    </form>
+                </div>
             </header>
 
             <section class="recent-section">

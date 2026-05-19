@@ -37,6 +37,37 @@ class ProductController extends Controller
         return view('admin.products.index', compact('products', 'pendingProducts', 'categories', 'shop'));
     }
 
+    public function search(Request $request, $shop_id)
+    {
+        $searchTerm = $request->input('search');
+
+        $query = Product::with('category')
+            ->where('shop_id', $shop_id);
+
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+
+        $products = (clone $query)
+            ->where(function ($query) use ($searchTerm) {
+                $query->where('name', 'like', '%'.$searchTerm.'%')
+                    ->orWhere('sku', 'like', '%'.$searchTerm.'%');
+            })
+            ->whereNot('status', ProductStatus::PENDING)
+            ->latest()
+            ->paginate(10);
+
+        $pendingProducts = (clone $query)
+            ->where('status', ProductStatus::PENDING)
+            ->latest()
+            ->get();
+
+        $categories = Category::all();
+        $shop = Shop::findOrFail($shop_id);
+
+        return view('admin.products.index', compact('products', 'pendingProducts', 'categories', 'shop'));
+    }
+
     public function updateStatusToApproved(Product $product)
     {
         if ($product->status !== ProductStatus::PENDING) {

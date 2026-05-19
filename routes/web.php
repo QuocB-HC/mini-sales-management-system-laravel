@@ -82,10 +82,10 @@ Route::middleware('auth')->group(function () {
     });
 
     // Shop information routes
-        Route::prefix('shop')->as('shop.')->group(function () {
-            Route::get('/create', [SellerShopController::class, 'create'])->name('create'); // shop.create
-            Route::post('/store', [SellerShopController::class, 'store'])->name('store'); // shop.store
-        });
+    Route::prefix('shop')->as('shop.')->group(function () {
+        Route::get('/create', [SellerShopController::class, 'create'])->name('create'); // shop.create
+        Route::post('/store', [SellerShopController::class, 'store'])->name('store'); // shop.store
+    });
 
     Route::get('/return-vnpay', [CartController::class, 'vnpayReturn']);
 
@@ -115,18 +115,24 @@ Route::middleware('auth')->group(function () {
 
         // Admin shop routes
         Route::prefix('shops')->as('shops.')->group(function () {
-                Route::get('/', [AdminShopController::class, 'index'])->name('index'); // admin.shops.index
-                Route::put('/{shop}/approve', [AdminShopController::class, 'updateStatusToApproved'])->name('approve'); // admin.shops.approve
-                Route::put('/{shop}/reject', [AdminShopController::class, 'updateStatusToRejected'])->name('reject'); // admin.shops.reject
+            Route::get('/', [AdminShopController::class, 'index'])->name('index'); // admin.shops.index
+            Route::get('/search', [AdminShopController::class, 'search'])->name('search'); // admin.shops.search
+            Route::put('/{shop}/approve', [AdminShopController::class, 'updateStatusToApproved'])->name('approve'); // admin.shops.approve
+            Route::put('/{shop}/reject', [AdminShopController::class, 'updateStatusToRejected'])->name('reject'); // admin.shops.reject
+        });
+
+        // Get products by shop
+        Route::prefix('shops')->as('products.')->group(function () {
+            Route::get('/{shop_id}/products', [AdminProductController::class, 'index'])->name('index'); // admin.products.index
+            Route::get('/{shop_id}/products/search', [AdminProductController::class, 'search'])->name('search'); // admin.products.search
         });
 
         // Admin product routes
-        Route::prefix('shops')->as('products.')->group(function () {
-            Route::get('/{shop_id}/products', [AdminProductController::class, 'index'])->name('index'); // admin.products.index
-            Route::patch('/approve/{product}', [AdminProductController::class, 'updateStatusToApproved'])->name('approve'); // admin.products.approve
-            Route::patch('/reject/{product}', [AdminProductController::class, 'updateStatusToRejected'])->name('reject'); // admin.products.reject
-            Route::patch('/hide/{product}', [AdminProductController::class, 'updateStatusToHidden'])->name('hide'); // admin.products.hide
-            Route::patch('/visible/{product}', [AdminProductController::class, 'updateStatusToVisible'])->name('visible'); // admin.products.visible
+        Route::prefix('products')->as('products.')->group(function () {
+            Route::patch('/{product}/approve', [AdminProductController::class, 'updateStatusToApproved'])->name('approve'); // admin.products.approve
+            Route::patch('/{product}/reject', [AdminProductController::class, 'updateStatusToRejected'])->name('reject'); // admin.products.reject
+            Route::patch('/{product}/hide', [AdminProductController::class, 'updateStatusToHidden'])->name('hide'); // admin.products.hide
+            Route::patch('/{product}/visible', [AdminProductController::class, 'updateStatusToVisible'])->name('visible'); // admin.products.visible
         });
 
         // Admin category routes
@@ -135,6 +141,7 @@ Route::middleware('auth')->group(function () {
         // Admin user routes
         Route::get('/users', [AdminUserController::class, 'index'])->name('users.index'); // admin.users.index
         Route::put('/users/{user}', [AdminUserController::class, 'updateIsBanned'])->name('users.updateIsBanned'); // admin.users.updateIsBanned
+        Route::get('/users/search', [AdminUserController::class, 'search'])->name('users.search'); // admin.users.search
 
         // Admin order routes
         Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index'); // admin.orders.index

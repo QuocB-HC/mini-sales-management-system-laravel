@@ -32,4 +32,19 @@ class UserController extends Controller
         return redirect()->route('admin.users.index')
             ->with('success', 'User banned status updated successfully!');
     }
+
+    public function search(Request $request)
+    {
+        $searchTerm = $request->input('search');
+
+        $users = User::oldest()
+            ->where(function ($query) {
+                $query->where('role', UserRole::CUSTOMER->value)
+                    ->orWhere('role', UserRole::SELLER->value);
+            })
+            ->where('email', 'like', '%' . $searchTerm . '%')
+            ->paginate(10);
+
+        return view('admin.users.index', compact('users'));
+    }
 }

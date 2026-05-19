@@ -251,6 +251,7 @@ header {
     color: #333;
 }
 
+/* Modal Customization */
 .modal-overlay {
     display: none;
     position: fixed;
@@ -290,4 +291,34 @@ header {
     border: none;
     font-weight: bold;
     color: #333;
+}
+
+/* Search Form */
+.search-container {
+    display: flex;
+    justify-content: flex-end;
+}
+.search-form {
+    display: flex;
+}
+.search-form input[type="text"] {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px 0 0 4px;
+    width: 200px;
+}
+.search-form input[type="text"]:focus {
+    outline: none;
+    border-color: #007bff;
+}
+.search-form .search-btn {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+}
+.search-form .search-btn:hover {
+    background-color: #0056b3;
 }

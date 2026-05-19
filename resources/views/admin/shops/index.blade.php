@@ -10,6 +10,15 @@
     <div class="main-container">
         <header>
             <h1>Shops Management</h1>
+
+            <div class="search-container">
+                <form action="{{ route('admin.shops.search') }}" method="GET" class="search-form">
+                    <input type="text" name="search" placeholder="Enter shop name or owner email"
+                        value="{{ request('search') }}">
+                    <button type="submit" class="search-btn">Search</button>
+                </form>
+            </div>
+
             <button type="button" onclick="openModal('customModal')" class="view-btn btn-add">
                 Open Pending Shops Modal
             </button>
