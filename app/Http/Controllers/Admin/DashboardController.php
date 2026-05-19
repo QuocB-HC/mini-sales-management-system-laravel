@@ -15,7 +15,9 @@ class DashboardController extends Controller
     public function index()
     {
         // 1. Get key statistics for the dashboard
-        $totalUsers = User::where('role', UserRole::CUSTOMER->value)->count();
+        $totalUsers = User::where('role', UserRole::CUSTOMER->value)
+            ->orWhere('role', UserRole::SELLER->value)
+            ->count();
         $totalOrders = Order::count();
         $totalRevenue = Order::where('status', OrderStatus::COMPLETED->value)->sum('total_price');
         $newUsersThisMonth = User::whereMonth('created_at', Carbon::now()->month)

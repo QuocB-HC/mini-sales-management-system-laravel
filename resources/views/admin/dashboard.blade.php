@@ -1,3 +1,7 @@
+@php
+    use App\Enums\OrderStatus;
+@endphp
+
 @extends('layouts.admin')
 
 @section('title', 'Admin Dashboard')
@@ -70,34 +74,27 @@
                             <td data-label="Order ID">#{{ $order->id }}</td>
                             <td data-label="Customer">{{ $order->receiver_name ?? 'Guest' }}</td>
                             <td data-label="Status"><span
-                                    class="status {{ $order->status->value }}">{{ ucfirst($order->status->value) }}</span></td>
+                                    class="status {{ $order->status->value }}">{{ ucfirst($order->status->value) }}</span>
+                            </td>
                             <td data-label="Total">{{ number_format($order->total_price, 0, ',', '.') }} VND</td>
                             <td data-label="Actions">
                                 @if ($order->status->value !== 'cancelled')
                                     <form
-                                        onsubmit="confirmModal(event, 'Chage Order Status', 'Are you sure to change status of this order?')"
+                                        onsubmit="confirmModal(event, 'Change Order Status', 'Are you sure to change status of this order?')"
                                         action="{{ route('admin.orders.updateStatus', $order) }}" method="POST"
                                         class="action-btns">
                                         @csrf
                                         @method('PUT')
-                                        <select name="status" class="status-select">
-                                            <option value="pending" {{ $order->status->value === 'pending' ? 'selected' : '' }}>
-                                                Pending
-                                            </option>
-                                            <option value="processing"
-                                                {{ $order->status->value === 'processing' ? 'selected' : '' }}>Processing
-                                            </option>
-                                            <option value="shipping" {{ $order->status->value === 'shipping' ? 'selected' : '' }}>
-                                                Shipping
-                                            </option>
-                                            <option value="completed"
-                                                {{ $order->status->value === 'completed' ? 'selected' : '' }}>Completed
-                                            </option>
-                                            <option value="cancelled"
-                                                {{ $order->status->value === 'cancelled' ? 'selected' : '' }}>Cancelled
-                                            </option>
+                                        <select name="status" class="status-select"
+                                            data-original="{{ $order->status->value }}">
+                                            @foreach (OrderStatus::cases() as $status)
+                                                <option value="{{ $status->value }}"
+                                                    {{ $order->status->value === $status->value ? 'selected' : '' }}>
+                                                    {{ ucfirst($status->value) }}
+                                                </option>
+                                            @endforeach
                                         </select>
-                                        <button type="submit" class="update-button">Update</button>
+                                        <button type="submit" class="update-button" disabled>Update</button>
                                     </form>
                                 @else
                                     N/A
@@ -136,34 +133,27 @@
                         <tr>
                             <td data-label="Order ID">#{{ $order->id }}</td>
                             <td data-label="Customer">{{ $order->receiver_name ?? 'Guest' }}</td>
-                            <td data-label="Status"><span class="status shipping">{{ ucfirst($order->status->value) }}</span></td>
+                            <td data-label="Status"><span
+                                    class="status shipping">{{ ucfirst($order->status->value) }}</span></td>
                             <td data-label="Total">{{ number_format($order->total_price, 0, ',', '.') }} VND</td>
                             <td data-label="Actions">
                                 @if ($order->status->value !== 'cancelled')
                                     <form
-                                        onsubmit="confirmModal(event, 'Chage Order Status', 'Are you sure to change status of this order?')"
+                                        onsubmit="confirmModal(event, 'Change Order Status', 'Are you sure to change status of this order?')"
                                         action="{{ route('admin.orders.updateStatus', $order) }}" method="POST"
                                         class="update-status-form">
                                         @csrf
                                         @method('PUT')
-                                        <select name="status" class="status-select">
-                                            <option value="pending" {{ $order->status->value === 'pending' ? 'selected' : '' }}>
-                                                Pending
-                                            </option>
-                                            <option value="processing"
-                                                {{ $order->status->value === 'processing' ? 'selected' : '' }}>Processing
-                                            </option>
-                                            <option value="shipping" {{ $order->status->value === 'shipping' ? 'selected' : '' }}>
-                                                Shipping
-                                            </option>
-                                            <option value="completed"
-                                                {{ $order->status->value === 'completed' ? 'selected' : '' }}>Completed
-                                            </option>
-                                            <option value="cancelled"
-                                                {{ $order->status->value === 'cancelled' ? 'selected' : '' }}>Cancelled
-                                            </option>
+                                        <select name="status" class="status-select"
+                                            data-original="{{ $order->status->value }}">
+                                            @foreach (OrderStatus::cases() as $status)
+                                                <option value="{{ $status->value }}"
+                                                    {{ $order->status->value === $status->value ? 'selected' : '' }}>
+                                                    {{ ucfirst($status->value) }}
+                                                </option>
+                                            @endforeach
                                         </select>
-                                        <button type="submit" class="update-button">Update</button>
+                                        <button type="submit" class="update-button" disabled>Update</button>
                                     </form>
                                 @else
                                     N/A
@@ -255,6 +245,16 @@
                     }
                 }
             }
+        });
+
+        //=========== Order Status Update Logic ===========//
+        document.querySelectorAll('.status-select').forEach(select => {
+            const btn = select.closest('form').querySelector('.update-button');
+            const originalStatus = select.dataset.original;
+
+            select.addEventListener('change', () => {
+                btn.disabled = select.value === originalStatus;
+            });
         });
     </script>
 @endpush
