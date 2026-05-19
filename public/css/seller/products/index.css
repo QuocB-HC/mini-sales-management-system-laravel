@@ -204,8 +204,8 @@ tbody tr:hover {
     color: #007bff;
 }
 .btn-hide:hover {
-    border-color: #dc3545;
-    color: #dc3545;
+    border-color: #373232;
+    color: #373232;
 }
 .btn-hide.disabled {
     border-color: #dee2e6;

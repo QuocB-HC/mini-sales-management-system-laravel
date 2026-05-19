@@ -81,6 +81,11 @@
     gap: 10px;
 }
 
+.modal-content .modal-body {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
 /*========== Tablet ==========*/
 @media (max-width: 991px) {
     .main-container {

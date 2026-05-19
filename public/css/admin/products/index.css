@@ -90,6 +90,48 @@
     color: #666;
 }
 
+.btn-icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+    color: #636e72;
+    background: #ffffff;
+    transition: 0.2s;
+    cursor: pointer;
+    text-decoration: none;
+}
+.btn-icon:hover {
+    transform: scale(1.1);
+}
+.btn-approve:hover {
+    border-color: #28a745;
+    color: #28a745;
+}
+
+.btn-reject:hover {
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+.btn-hide:hover {
+    border-color: #373232;
+    color: #373232;
+}
+.btn-hide.disabled {
+    border-color: #dee2e6;
+    color: #dee2e6;
+    cursor: not-allowed;
+}
+
+.modal-content .modal-body {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
 /*========== Tablet ==========*/
 @media (max-width: 991px) {
     .main-container {

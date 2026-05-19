@@ -3,11 +3,11 @@
 namespace App\Services;
 
 use App\Enums\OrderStatus;
-use Illuminate\Http\Request;
+use App\Mail\OrderNotification;
 use App\Models\Order;
 use App\Models\Product;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\OrderNotification;
 
 class VNPayService
 {
@@ -75,20 +75,33 @@ class VNPayService
             $order = Order::findOrFail($orderId);
 
             if ($request->vnp_ResponseCode == '00') {
-                // Update Order Status
-                $order->update(['status' => OrderStatus::PROCESSING]);
+                DB::transaction(function () use ($order) {
+                    $order->update(['status' => OrderStatus::PROCESSING]);
 
-                // Deduct from storage immediately here (Payment successful)
-                foreach ($order->items as $item) {
-                    Product::where('id', $item->product_id)
-                        ->decrement('stock_quantity', $item->quantity);
-                }
+                    foreach ($order->items as $item) {
+                        $product = Product::lockForUpdate()->findOrFail($item->product_id);
+                        $oldStatus = $product->status;
+                        $product->decrement('stock_quantity', $item->quantity);
 
-                // 3. Clear the cart & Send Mail
+                        if ($product->stock_quantity <= 0) {
+                            ProductStatusLog::create([
+                                'product_id' => $product->id,
+                                'old_status' => $oldStatus,
+                                'new_status' => ProductStatus::OUT_OF_STOCK,
+                                'reason' => 'Stock quantity reached 0',
+                                'changed_by' => null,
+                                'changed_by_role' => 'system',
+                            ]);
+
+                            $product->status = ProductStatus::OUT_OF_STOCK;
+                            $product->save();
+                        }
+                    }
+                });
+
                 session()->forget('cart');
                 Mail::to($order->user->email)->send(new OrderNotification($order));
 
-                // Send confirm payment mail here
                 return redirect()->route('checkout.success', $order->id);
             } else {
                 // If the payment fails, you can keep the status as 'pending'

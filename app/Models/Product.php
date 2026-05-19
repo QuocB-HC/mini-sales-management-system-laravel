@@ -92,6 +92,11 @@ class Product extends Model
         return in_array($this->status, [ProductStatus::APPROVED, ProductStatus::OUT_OF_STOCK]);
     }
 
+    public function isRejected(): bool
+    {
+        return $this->status === ProductStatus::REJECTED;
+    }
+
     public function statusLogs(): HasMany
     {
         return $this->hasMany(ProductStatusLog::class);

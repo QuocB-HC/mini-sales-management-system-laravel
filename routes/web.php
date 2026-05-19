@@ -102,8 +102,8 @@ Route::middleware('auth')->group(function () {
             Route::post('/store', [SellerProductController::class, 'store'])->name('store'); // seller.products.store
             Route::get('/edit/{id}', [SellerProductController::class, 'edit'])->name('edit'); // seller.products.edit
             Route::put('/update/{id}', [SellerProductController::class, 'update'])->name('update'); // seller.products.update
-            Route::patch('/update-status-to-hidden/{id}', [SellerProductController::class, 'updateStatusToHidden'])->name('updateStatusToHidden'); // seller.products.updateStatusToHidden
-            Route::patch('/update-status-to-visible/{id}', [SellerProductController::class, 'updateStatusToVisible'])->name('updateStatusToVisible'); // seller.products.updateStatusToVisible
+            Route::patch('/update-status-to-hidden/{product}', [SellerProductController::class, 'updateStatusToHidden'])->name('updateStatusToHidden'); // seller.products.updateStatusToHidden
+            Route::patch('/update-status-to-visible/{product}', [SellerProductController::class, 'updateStatusToVisible'])->name('updateStatusToVisible'); // seller.products.updateStatusToVisible
             Route::get('/{shopId?}', [SellerProductController::class, 'index'])->name('index'); // seller.products.index
         });
     });
@@ -123,9 +123,10 @@ Route::middleware('auth')->group(function () {
         // Admin product routes
         Route::prefix('shops')->as('products.')->group(function () {
             Route::get('/{shop_id}/products', [AdminProductController::class, 'index'])->name('index'); // admin.products.index
-            Route::put('/approve/{product}', [AdminProductController::class, 'updateStatusToApproved'])->name('approve'); // admin.products.approve
-            Route::put('/reject/{product}', [AdminProductController::class, 'updateStatusToRejected'])->name('reject'); // admin.products.reject
-            Route::put('/hide/{product}', [AdminProductController::class, 'updateStatusToHidden'])->name('hide'); // admin.products.hide
+            Route::patch('/approve/{product}', [AdminProductController::class, 'updateStatusToApproved'])->name('approve'); // admin.products.approve
+            Route::patch('/reject/{product}', [AdminProductController::class, 'updateStatusToRejected'])->name('reject'); // admin.products.reject
+            Route::patch('/hide/{product}', [AdminProductController::class, 'updateStatusToHidden'])->name('hide'); // admin.products.hide
+            Route::patch('/visible/{product}', [AdminProductController::class, 'updateStatusToVisible'])->name('visible'); // admin.products.visible
         });
 
         // Admin category routes

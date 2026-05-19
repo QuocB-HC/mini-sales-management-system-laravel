@@ -59,7 +59,61 @@
                                     class="status {{ $product->status->value }}">{{ ucfirst(str_replace('_', ' ', $product->status->value)) }}</span>
                             </td>
                             <td class="action-btns">
+                                @php
+                                    $isRejected = $product->isRejected();
+                                    $isHidden = $product->isHidden();
+                                @endphp
 
+                                @if ($isRejected)
+                                    <form
+                                        onsubmit="confirmModal(event, 'Make Product Approved Confirm', 'Are you sure you want to make this product approved?')"
+                                        action="{{ route('admin.products.approve', $product->id) }}" method="POST">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="btn-icon btn-approve">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                    </form>
+                                @else
+                                    <form
+                                        onsubmit="confirmModal(event, 'Make Product Rejected Confirm', 'Are you sure you want to make this product rejected?')"
+                                        action="{{ route('admin.products.reject', $product->id) }}" method="POST">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="btn-icon btn-reject">
+                                            <i class="fas fa-ban"></i>
+                                        </button>
+                                    </form>
+                                @endif
+
+                                @if ($isHidden)
+                                    <form
+                                        onsubmit="confirmModal(event, 'Make Product Visible Confirm', 'Are you sure you want to make this product visible?')"
+                                        action="{{ route('admin.products.visible', $product->id) }}" method="POST">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="btn-icon btn-hide">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </form>
+                                @else
+                                    @php
+                                        $canHide = $product->canBeHidden();
+                                        $cannotHide = !$canHide;
+                                    @endphp
+
+                                    <form
+                                        onsubmit="confirmModal(event, 'Make Product Hidden Confirm', 'Are you sure you want to make this product hidden?')"
+                                        action="{{ route('admin.products.hide', $product->id) }}" method="POST">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit"
+                                            class="btn-icon btn-hide {{ $cannotHide ? 'disabled' : '' }}"
+                                            @disabled($cannotHide)>
+                                            <i class="fas fa-eye-slash"></i>
+                                        </button>
+                                    </form>
+                                @endif
                             </td>
                         </tr>
                     @empty
@@ -120,15 +174,19 @@
                                             onsubmit="confirmModal(event, 'Approve Confirm', 'Are you sure you want to approve this product?')"
                                             action="{{ route('admin.products.approve', $product->id) }}" method="POST">
                                             @csrf
-                                            @method('PUT')
-                                            <button type="submit" class="view-btn btn-add">Approve</button>
+                                            @method('PATCH')
+                                            <button type="submit" class="view-btn btn-add">
+                                                Approve
+                                            </button>
                                         </form>
                                         <form
                                             onsubmit="confirmModal(event, 'Reject Confirm', 'Are you sure you want to reject this product?')"
                                             action="{{ route('admin.products.reject', $product->id) }}" method="POST">
                                             @csrf
-                                            @method('PUT')
-                                            <button type="submit" class="view-btn btn-delete">Reject</button>
+                                            @method('PATCH')
+                                            <button type="submit" class="view-btn btn-delete">
+                                                Reject
+                                            </button>
                                         </form>
                                     </td>
                                 </tr>
@@ -140,15 +198,11 @@
                         </tbody>
                     </table>
                 </section>
-
-                <div class="pagination-wrapper">
-                    <div class="pagination-container">
-                        {{ $pendingProducts->links() }}
-                    </div>
-                </div>
             </div>
         </div>
     </div>
+
+    <x-modal-custom />
 @endsection
 
 @push('scripts')

@@ -81,8 +81,8 @@
 
                                     @if ($isHidden)
                                         <form
-                                            onsubmit="confirmModal(event, 'Show Product Confirm', 'Are you sure you want to show this product?')"
-                                            action="{{ route('seller.products.updateStatusToVisible', ['id' => $product->id]) }}"
+                                            onsubmit="confirmModal(event, 'Make Product Visible Confirm', 'Are you sure you want to make this product visible?')"
+                                            action="{{ route('seller.products.updateStatusToVisible', $product->id) }}"
                                             method="POST">
                                             @csrf
                                             @method('PATCH')
@@ -97,8 +97,8 @@
                                         @endphp
 
                                         <form
-                                            onsubmit="confirmModal(event, 'Hide Product Confirm', 'Are you sure you want to hide this product?')"
-                                            action="{{ route('seller.products.updateStatusToHidden', ['id' => $product->id]) }}"
+                                            onsubmit="confirmModal(event, 'Make Product Hidden Confirm', 'Are you sure you want to make this product hidden?')"
+                                            action="{{ route('seller.products.updateStatusToHidden', $product->id) }}"
                                             method="POST">
                                             @csrf
                                             @method('PATCH')
@@ -129,4 +129,6 @@
             </div>
         </div>
     </div>
+
+    <x-modal-custom />
 @endsection

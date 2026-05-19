@@ -12,6 +12,7 @@ use App\Models\Product;
 use App\Models\ProductStatusLog;
 use App\Models\Shop;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -83,16 +84,37 @@ class ProductController extends Controller
         }
 
         $data = $request->validated();
+        $oldStatus = $product->status;
+        $newStatus = null;
 
-        $product->update($data);
+        if ($product->status === ProductStatus::OUT_OF_STOCK && $data['stock_quantity'] > 0) {
+            $newStatus = ProductStatus::APPROVED;
+            $data['status'] = $newStatus;
+        } elseif ($product->status === ProductStatus::APPROVED && $data['stock_quantity'] == 0) {
+            $newStatus = ProductStatus::OUT_OF_STOCK;
+            $data['status'] = $newStatus;
+        }
+
+        DB::transaction(function () use ($product, $data, $oldStatus, $newStatus) {
+            $product->update($data);
+
+            if ($newStatus !== null) {
+                ProductStatusLog::create([
+                    'product_id' => $product->id,
+                    'old_status' => $oldStatus,
+                    'new_status' => $newStatus,
+                    'reason' => 'Stock quantity updated by seller',
+                    'changed_by' => auth()->id(),
+                    'changed_by_role' => UserRole::SELLER,
+                ]);
+            }
+        });
 
         return redirect()->route('seller.products.index')->with('success', 'Product updated successfully.');
     }
 
-    public function updateStatusToHidden($id)
+    public function updateStatusToHidden(Product $product)
     {
-        $product = Product::findOrFail($id);
-
         if ($product->shop->user_id !== auth()->id()) {
             return abort(403, 'You are not allowed to update this product.');
         }
@@ -104,17 +126,16 @@ class ProductController extends Controller
             'product_id' => $product->id,
             'old_status' => $oldStatus,
             'new_status' => ProductStatus::HIDDEN,
+            'reason' => 'Hidden by seller',
             'changed_by' => auth()->id(),
             'changed_by_role' => UserRole::SELLER,
         ]);
 
-        return redirect()->route('seller.products.index')->with('success', 'Product status updated to hidden successfully.');
+        return redirect()->back()->with('success', 'Product status updated to hidden successfully.');
     }
 
-    public function updateStatusToVisible($id)
+    public function updateStatusToVisible(Product $product)
     {
-        $product = Product::findOrFail($id);
-
         if ($product->shop->user_id !== auth()->id()) {
             return abort(403, 'You are not allowed to update this product.');
         }
@@ -132,10 +153,11 @@ class ProductController extends Controller
             'product_id' => $product->id,
             'old_status' => $oldStatus,
             'new_status' => $restoredStatus,
+            'reason' => 'Restored by seller',
             'changed_by' => auth()->id(),
-            'changed_by_role' => 'seller',
+            'changed_by_role' => UserRole::SELLER,
         ]);
 
-        return redirect()->route('seller.products.index')->with('success', 'Product status restored successfully.');
+        return redirect()->back()->with('success', 'Product status restored successfully.');
     }
 }

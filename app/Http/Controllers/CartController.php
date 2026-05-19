@@ -278,13 +278,23 @@ class CartController extends Controller
                 foreach ($cart as $id => $details) {
                     $product = Product::lockForUpdate()->find($id);
                     $quantity = $details['quantity'];
-                    
+
                     if ($product) {
                         DB::transaction(function () use ($product, $quantity) {
                             $product->decrement('stock_quantity', $quantity);
 
-                            if ($product->fresh()->stock_quantity <= 0) {
-                                $product->update(['status' => ProductStatus::OUT_OF_STOCK]);
+                            if ($product->stock_quantity <= 0) {
+                                ProductStatusLog::create([
+                                    'product_id' => $product->id,
+                                    'old_status' => $product->status,
+                                    'new_status' => ProductStatus::OUT_OF_STOCK,
+                                    'reason' => 'Stock quantity reached 0',
+                                    'changed_by' => null,
+                                    'changed_by_role' => 'system',
+                                ]);
+
+                                $product->status = ProductStatus::OUT_OF_STOCK;
+                                $product->save();
                             }
                         });
                     }
