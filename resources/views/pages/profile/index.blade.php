@@ -13,6 +13,7 @@
                 <div class="profile-avatar">
                     <img src="{{ $user->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&size=128' }}"
                         alt="User Avatar">
+                    
                 </div>
                 <h2>{{ $user->name }}</h2>
                 <span class="badge">Member since {{ $user->created_at->format('M Y') }}</span>

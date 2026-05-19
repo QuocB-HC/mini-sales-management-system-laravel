@@ -16,13 +16,13 @@ class OrderController extends Controller
 
         $orders = Order::where('user_id', $user->id)->latest()->paginate(10);
 
-        return view('pages.order-history', compact('orders'));
+        return view('pages.order.list', compact('orders'));
     }
 
     public function show($id)
     {
         $order = Order::findOrFail($id);
 
-        return view('pages.order-detail', compact('order'));
+        return view('pages.order.detail', compact('order'));
     }
 }

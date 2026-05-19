@@ -23,7 +23,7 @@ class AuthController extends Controller
 {
     public function showLogin()
     {
-        return view('pages.login');
+        return view('pages.auth.login');
     }
 
     public function login(LoginRequest $request)
@@ -70,7 +70,7 @@ class AuthController extends Controller
 
     public function showRegister()
     {
-        return view('pages.register');
+        return view('pages.auth.register');
     }
 
     public function sendVerificationCode(SendVerificationCodeRequest $request)
@@ -105,7 +105,7 @@ class AuthController extends Controller
 
     public function showCompleteRegister()
     {
-        return view('pages.register-complete');
+        return view('pages.auth.register-complete');
     }
 
     public function verifyEmail(VerifyEmailRequest $request)
@@ -163,7 +163,7 @@ class AuthController extends Controller
 
     public function showForgetPassword()
     {
-        return view('pages.forget-password');
+        return view('pages.auth.forget-password');
     }
 
     public function sendOtp(SendOTPRequest $request)

@@ -19,7 +19,7 @@ class ProductController extends Controller
             ->paginate(15);
         $categories = Category::all();
 
-        return view('pages.product-list', compact('products', 'categories'));
+        return view('pages.product.list', compact('products', 'categories'));
     }
 
     /**
@@ -41,7 +41,7 @@ class ProductController extends Controller
         $products = $query->paginate(15);
         $categories = Category::all();
 
-        return view('pages.product-list', compact('products', 'categories'));
+        return view('pages.product.list', compact('products', 'categories'));
     }
 
     public function searchAjax(Request $request)
@@ -67,7 +67,7 @@ class ProductController extends Controller
             ->get();
         $categories = Category::all();
 
-        return view('pages.home', compact('products', 'categories'));
+        return view('pages.home.index', compact('products', 'categories'));
     }
 
     public function showByCategory($category)
@@ -79,13 +79,13 @@ class ProductController extends Controller
             ->paginate(15);
         $categories = Category::all();
 
-        return view('pages.product-list', compact('products', 'categories'));
+        return view('pages.product.list', compact('products', 'categories'));
     }
 
     public function detail($id)
     {
         $product = Product::visibleOnStorefront()->findOrFail($id);
 
-        return view('pages.product-detail', compact('product'));
+        return view('pages.product.detail', compact('product'));
     }
 }

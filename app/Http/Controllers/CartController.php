@@ -30,7 +30,7 @@ class CartController extends Controller
             $totalAmount += $item['price'] * $item['quantity'];
         }
 
-        return view('pages.cart', compact('cartItems', 'totalAmount'));
+        return view('pages.cart.index', compact('cartItems', 'totalAmount'));
     }
 
     public function addToCart($id, AddToCartRequest $request)
@@ -136,7 +136,7 @@ class CartController extends Controller
             $totalAmount += $item['price'] * $item['quantity'];
         }
 
-        return view('pages.payment', compact('cartItems', 'totalAmount', 'user'));
+        return view('pages.cart.payment', compact('cartItems', 'totalAmount', 'user'));
     }
 
     public function applyDiscount(Request $request)
@@ -335,6 +335,6 @@ class CartController extends Controller
             abort(403, 'Unauthorized');
         }
 
-        return view('pages.order-success', compact('order'));
+        return view('pages.cart.order-success', compact('order'));
     }
 }

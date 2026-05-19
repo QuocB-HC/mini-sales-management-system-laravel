@@ -12,14 +12,14 @@ class UserController extends Controller
         // Get the authenticated user
         $user = Auth::user();
 
-        return view('pages.profile', compact('user'));
+        return view('pages.profile.index', compact('user'));
     }
 
     public function edit()
     {
         $user = auth()->user();
 
-        return view('pages.profile-edit', compact('user'));
+        return view('pages.profile.edit', compact('user'));
     }
 
     public function update(Request $request)
