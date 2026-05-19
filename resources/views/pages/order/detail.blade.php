@@ -3,7 +3,7 @@
 @section('title', 'Order Detail #' . $order->id)
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/pages/order-detail.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/pages/order/detail.css') }}">
 @endpush
 
 @section('content')

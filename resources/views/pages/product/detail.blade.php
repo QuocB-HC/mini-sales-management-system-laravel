@@ -1,9 +1,9 @@
 @extends('layouts.user')
 
-@section('title', $product->name . 'Detail')
+@section('title', $product->name . ' - Detail')
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/pages/product-detail.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/pages/product/detail.css') }}">
 @endpush
 
 @section('content')
@@ -58,6 +58,16 @@
                 </div>
             </div>
         </div>
+
+        <a href="{{ route('shop.index', $product->shop_id) }}" class="shop-badge">
+            @if ($product->shop->logo_url)
+                <img src="{{ $product->shop->logo_url }}" alt="{{ $product->shop->name }}" class="shop-badge-logo">
+            @else
+                <i class="fas fa-store"></i>
+            @endif
+            <span>{{ $product->shop->name }}</span>
+            <i class="fas fa-chevron-right"></i>
+        </a>
 
         <div class="product-tabs">
             <div class="tab-header">

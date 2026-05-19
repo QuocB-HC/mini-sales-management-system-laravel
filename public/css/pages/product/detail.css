@@ -132,6 +132,40 @@
     margin-right: 5px;
 }
 
+/* Shop Badge */
+.shop-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+    margin-bottom: 20px;
+    transition: 0.2s;
+}
+.shop-badge:hover {
+    background: #f8f9fa;
+    border-color: #ddd;
+}
+.shop-badge-logo {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.shop-badge i.fa-store {
+    font-size: 16px;
+    color: #888;
+}
+.shop-badge i.fa-chevron-right {
+    font-size: 12px;
+    color: #aaa;
+    margin-left: auto;
+}
+
 /* Tabs */
 .product-tabs {
     border-top: 2px solid #eee;

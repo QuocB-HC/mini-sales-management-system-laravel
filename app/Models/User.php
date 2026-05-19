@@ -61,4 +61,20 @@ class User extends Authenticatable
     {
         return $this->role === UserRole::ADMIN;
     }
+
+    public function getAvatarUrlAttribute($value)
+    {
+        // 1. If there is a value in the DB and it starts with http (third-party image)
+        if ($value && str_starts_with($value, 'http')) {
+            return $value;
+        }
+
+        // 2. If there is a value in the DB and the file exists in the public/storage directory
+        if ($value && file_exists(public_path('storage/'.$value))) {
+            return asset('storage/'.$value);
+        }
+
+        // 3. Return the default image if the above conditions are not met
+        return asset('images/default-avatar.png'); // Or link placeholder
+    }
 }

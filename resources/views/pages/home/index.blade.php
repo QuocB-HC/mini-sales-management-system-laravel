@@ -3,7 +3,7 @@
 @section('title', 'Home Page')
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/pages/home.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/pages/home/index.css') }}">
 @endpush
 
 @section('content')

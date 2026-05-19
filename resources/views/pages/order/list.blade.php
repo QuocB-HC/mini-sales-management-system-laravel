@@ -3,7 +3,7 @@
 @section('title', 'Order History')
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/pages/order-history.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/pages/order/list.css') }}">
 @endpush
 
 @section('content')

@@ -21,25 +21,4 @@ class ShopController extends Controller
 
         return view('seller.shops.index', compact('shops', 'shop'));
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view('seller.shops.create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreShopRequest $request)
-    {
-        $data = $request->validated();
-        $data['user_id'] = auth()->id();
-
-        Shop::create($data);
-
-        return redirect()->route('home')->with('success', 'Shop information saved successfully.');
-    }
 }

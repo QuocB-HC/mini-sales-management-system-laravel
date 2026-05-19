@@ -13,6 +13,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\Seller\ProductController as SellerProductController;
 use App\Http\Controllers\Seller\ShopController as SellerShopController;
+use App\Http\Controllers\ShopController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +29,8 @@ Route::prefix('products')->as('products.')->group(function () {
     Route::get('/search', [ProductController::class, 'search'])->name('search'); // products.search
     Route::get('/search-ajax', [ProductController::class, 'searchAjax'])->name('searchAjax'); // products.searchAjax
 });
+
+Route::get('/shop/{id}', [ShopController::class, 'index'])->name('shop.index'); // shop.index
 
 // Cart routes
 Route::prefix('cart')->as('cart.')->group(function () {
@@ -58,7 +61,7 @@ Route::prefix('password')->as('password.')->group(function () {
 
 // 3. PROTECTED ROUTES (only for authenticated users)
 Route::middleware('auth')->group(function () {
-    // 1. USER PROFILE ROUTES
+    // ==================== USER PROFILE ROUTES ==================== //
     // User profile routes
     Route::prefix('profile')->as('profile.')->group(function () {
         Route::get('/', [UserController::class, 'show'])->name('index'); // profile.index
@@ -83,13 +86,14 @@ Route::middleware('auth')->group(function () {
 
     // Shop information routes
     Route::prefix('shop')->as('shop.')->group(function () {
-        Route::get('/create', [SellerShopController::class, 'create'])->name('create'); // shop.create
-        Route::post('/store', [SellerShopController::class, 'store'])->name('store'); // shop.store
+        Route::get('/create', [ShopController::class, 'create'])->name('create'); // shop.create
+        Route::post('/store', [ShopController::class, 'store'])->name('store'); // shop.store
     });
 
+    // VNPAY return route
     Route::get('/return-vnpay', [CartController::class, 'vnpayReturn']);
 
-    // SELLER ROUTES (only for users with seller role)
+    // ==================== SELLER ROUTES ==================== //
     Route::middleware('can:seller')->prefix('seller')->as('seller.')->group(function () {
         // Shop information routes
         Route::prefix('shop')->as('shop.')->group(function () {
@@ -108,7 +112,7 @@ Route::middleware('auth')->group(function () {
         });
     });
 
-    // ADMIN ROUTES (only for users with admin role)
+    // ==================== ADMIN ROUTES ==================== //
     Route::middleware('can:admin')->prefix('admin')->as('admin.')->group(function () {
         // Admin dashboard route
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard'); // admin.dashboard
