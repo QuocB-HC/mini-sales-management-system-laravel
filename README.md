@@ -71,5 +71,5 @@ Admin Acount:
 
 ---
 **Contact:**
-- **Your Name** - [nguyenvoquocbao292003@gmail.com]
-- **Project Link:** https://github.com/QuocB-HC/DigitalStore.git
+- **Nguyen Vo Quoc Bao** - [nguyenvoquocbao292003@gmail.com]
+- **Github:** https://github.com/QuocB-HC
