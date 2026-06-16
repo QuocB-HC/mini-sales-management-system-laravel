@@ -18,6 +18,7 @@ use Illuminate\Notifications\Notifiable;
     'phone',
     'address',
     'avatar_url',
+    'avatar_public_id',
     'is_banned',
 ])]
 #[Hidden(['password', 'remember_token'])]

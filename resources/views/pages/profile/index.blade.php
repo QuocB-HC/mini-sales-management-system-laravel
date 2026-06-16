@@ -11,9 +11,11 @@
         <div class="profile-card">
             <div class="profile-header">
                 <div class="profile-avatar">
-                    <img src="{{ $user->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&size=128' }}"
-                        alt="User Avatar">
-                    
+                    <img src="{{ auth()->user()->avatar_url ?? '/default-avatar.png' }}" width="80">
+
+                    <button type="button" onclick="openImageModal('customModal')" class="camera-icon">
+                        <i class="fa-solid fa-camera"></i>
+                    </button>
                 </div>
                 <h2>{{ $user->name }}</h2>
                 <span class="badge">Member since {{ $user->created_at->format('M Y') }}</span>
@@ -46,4 +48,51 @@
             </div>
         </div>
     </div>
+
+    <div id="customModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div></div>
+                <button class="close-icon" onclick="closeImageModal('customModal')">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <form action="{{ route('profile.avatar') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT')
+
+                    <input type="file" name="avatar" accept="image/*">
+
+                    <button type="submit">Update avatar</button>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
+
+@push('scripts')
+    <script>
+        function openImageModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeImageModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal-overlay')) {
+                event.target.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+    </script>
+@endpush

@@ -22,6 +22,7 @@ return new class extends Migration
             $table->integer('committed_quantity')->default(0);
             $table->decimal('price', 8, 2);
             $table->string('image_url')->nullable();
+            $table->string('image_public_url')->nullable()->after('image_url');
             // pending, approved, rejected, hidden, out_of_stock
             $table->string('status')->default('pending');
             $table->timestamps();

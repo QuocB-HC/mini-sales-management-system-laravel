@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\User\UpdateAvatarRequest;
+use App\Http\Requests\User\UpdateProfileRequest;
+use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,15 +25,9 @@ class UserController extends Controller
         return view('pages.profile.edit', compact('user'));
     }
 
-    public function update(Request $request)
+    public function update(UpdateProfileRequest $request)
     {
         $user = auth()->user();
-
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'phone' => 'nullable|string|max:15',
-            'address' => 'nullable|string|max:500',
-        ]);
 
         $user->update([
             'name' => $request->name,
@@ -39,5 +36,26 @@ class UserController extends Controller
         ]);
 
         return redirect()->route('profile.index')->with('success', 'Profile updated successfully!');
+    }
+
+    public function updateAvatar(UpdateAvatarRequest $request, CloudinaryService $cloudinary)
+    {
+        $user = auth()->user();
+
+        if ($user->avatar_public_id) {
+            $cloudinary->delete($user->avatar_public_id);
+        }
+
+        $result = $cloudinary->upload(
+            $request->file('avatar')->getRealPath(),
+            CloudinaryService::FOLDER_AVATAR
+        );
+
+        $user->update([
+            'avatar_url' => $result['url'],
+            'avatar_public_id' => $result['public_id'],
+        ]);
+
+        return back()->with('success', 'Update avatar successfully!');
     }
 }

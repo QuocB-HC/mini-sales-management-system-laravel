@@ -67,6 +67,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [UserController::class, 'show'])->name('index'); // profile.index
         Route::get('/edit', [UserController::class, 'edit'])->name('edit'); // profile.edit
         Route::put('/update', [UserController::class, 'update'])->name('update'); // profile.update
+        Route::put('/avatar', [UserController::class, 'updateAvatar'])->name('avatar'); // profile.avatar
     });
 
     // Checkout routes

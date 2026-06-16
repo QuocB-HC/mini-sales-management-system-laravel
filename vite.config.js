@@ -13,6 +13,7 @@ export default defineConfig({
                 'resources/js/app.js',
                 'resources/js/notifications/toast-handler.js',
                 'resources/js/notifications/modal-handler.js',
+                'resources/js/components/modal-custom.js',
 
             ],
             refresh: true,

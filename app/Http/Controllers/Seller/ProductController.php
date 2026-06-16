@@ -11,6 +11,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductStatusLog;
 use App\Models\Shop;
+use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -57,6 +58,16 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request)
     {
         $data = $request->validated();
+
+        $result = $cloudinary->upload(
+            $request->file('image')->getRealPath(),
+            CloudinaryService::FOLDER_PRODUCT
+        );
+
+        $user->update([
+            'avatar_url' => $result['url'],
+            'avatar_public_id' => $result['public_id'],
+        ]);
 
         Product::create($data);
 
@@ -159,5 +170,30 @@ class ProductController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Product status restored successfully.');
+    }
+
+    public function updateAvatar(Request $request, CloudinaryService $cloudinary)
+    {
+        $request->validate([
+            'avatar' => 'required|image|max:2048',
+        ]);
+
+        $user = auth()->user();
+
+        if ($user->avatar_public_id) {
+            $cloudinary->delete($user->avatar_public_id);
+        }
+
+        $result = $cloudinary->upload(
+            $request->file('image')->getRealPath(),
+            CloudinaryService::FOLDER_PRODUCT
+        );
+
+        $user->update([
+            'avatar_url' => $result['url'],
+            'avatar_public_id' => $result['public_id'],
+        ]);
+
+        return back()->with('success', 'Update product image successfully!');
     }
 }
